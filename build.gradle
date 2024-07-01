@@ -1,0 +1,59 @@
+plugins {
+    id 'java'
+    id "io.freefair.lombok" version "8.6"
+    id "io.qameta.allure" version "2.11.2"
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral() //ЗДЕСЬ УКАЗЫВАЕТСЯ ОТКУДА СКАЧАТЬ БИБЛИОТЕКИ
+}
+
+compileJava.options.encoding = 'UTF-8'
+
+tasks.withType(JavaCompile){
+    options.encoding = 'UTF-8'
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.9.1') //ЗДЕСЬ ЗАВИСИМОСТИ
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.9.1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.1'
+    compileOnly 'org.projectlombok:lombok:1.18.32'
+    implementation 'org.aeonbits.owner:owner:1.0.12'
+    testImplementation 'org.apache.commons:commons-io:1.3.2'
+    testImplementation 'io.rest-assured:rest-assured:4.4.0'
+    implementation 'io.qameta.allure:allure-rest-assured:2.27.0'
+    implementation 'com.github.javafaker:javafaker:1.0.2'
+    testImplementation 'org.seleniumhq.selenium:selenium-java:4.11.0'
+    testImplementation 'io.github.bonigarcia:webdrivermanager:5.8.0'
+    testImplementation 'com.codeborne:selenide:6.17.1'
+    testImplementation 'com.codeborne:pdf-test:1.8.1'
+
+
+}
+
+
+test {
+    useJUnitPlatform()
+}
+
+tasks.register("myTags",Test.class){
+    String fullTags = System.getProperty("customTag");
+    if(fullTags != null){
+        String[] tags = System.getProperty("customTag").split(",");
+        useJUnitPlatform{
+            for(String tag : tags){
+                includeTags.add(tag)
+            }
+        }
+        testLogging{
+            events "passed","skipped","failed"
+        }
+    }
+
+
+}
